@@ -38,4 +38,14 @@ public class PostController {
         }
     }
 
+    @PutMapping(value="/update/{id}")
+    public ResponseEntity<PostDto> updatePost(@RequestBody PostDto dto,@PathVariable Long id){
+        try{
+            return ResponseEntity.ok(postService.updatePost(dto,id));
+        }
+        catch(ResourceNotFoundException ex){
+            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        }
+    }
+
 }
