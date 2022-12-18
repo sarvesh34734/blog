@@ -4,6 +4,8 @@ import com.blog.restapi.dtos.PostDto;
 import com.blog.restapi.exception.ResourceNotFoundException;
 import com.blog.restapi.service.PostService;
 import jakarta.annotation.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +15,8 @@ import java.util.List;
 @RestController
 @RequestMapping(value="/api/posts")
 public class PostController {
+
+    Logger LOG = LoggerFactory.getLogger(PostController.class);
 
     @Resource
     private PostService postService;
@@ -45,6 +49,18 @@ public class PostController {
         }
         catch(ResourceNotFoundException ex){
             return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping(value="/delete/{id}")
+    public ResponseEntity<String> deletePost(@PathVariable Long id){
+        try{
+            postService.deletePostById(id);
+            return ResponseEntity.ok("Success");
+        }
+        catch(Exception ex){
+            LOG.error("failed to delete post by id : {}",id);
+            return new ResponseEntity<>("post with id " +  id + " not found",HttpStatus.NOT_FOUND);
         }
     }
 

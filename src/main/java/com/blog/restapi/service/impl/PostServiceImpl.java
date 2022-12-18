@@ -53,6 +53,11 @@ public class PostServiceImpl implements PostService {
         return populate(post);
     }
 
+    @Override
+    public void deletePostById(Long id) {
+        postRepository.deleteById(id);
+    }
+
     private PostDto populate(Post post){
         return PostDto.builder()
                 .id(post.getId())
