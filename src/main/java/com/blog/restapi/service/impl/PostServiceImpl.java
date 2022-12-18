@@ -26,23 +26,21 @@ public class PostServiceImpl implements PostService {
         // save
         Post savedPost = postRepository.save(p);
 
-        return PostDto
-                .builder()
-                .id(savedPost.getId())
-                .title(savedPost.getTitle())
-                .description(savedPost.getDescription())
-                .content(savedPost.getContent())
-                .build();
+        return populate(savedPost);
     }
 
     @Override
     public List<PostDto> getPosts(){
         List<Post> posts = postRepository.findAll();
-        return posts.stream().map(post -> PostDto.builder()
+        return posts.stream().map(post -> populate(post)).collect(Collectors.toList());
+    }
+
+    private PostDto populate(Post post){
+        return PostDto.builder()
                 .id(post.getId())
                 .title(post.getTitle())
                 .description(post.getDescription())
                 .content(post.getContent())
-                .build()).collect(Collectors.toList());
+                .build();
     }
 }
