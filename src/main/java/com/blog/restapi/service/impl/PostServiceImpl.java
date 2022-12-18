@@ -2,12 +2,14 @@ package com.blog.restapi.service.impl;
 
 import com.blog.restapi.dtos.PostDto;
 import com.blog.restapi.entity.Post;
+import com.blog.restapi.exception.ResourceNotFoundException;
 import com.blog.restapi.repository.PostRepository;
 import com.blog.restapi.service.PostService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +35,12 @@ public class PostServiceImpl implements PostService {
     public List<PostDto> getPosts(){
         List<Post> posts = postRepository.findAll();
         return posts.stream().map(post -> populate(post)).collect(Collectors.toList());
+    }
+
+    @Override
+    public PostDto getPost(Long id){
+        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("post","id",id));
+        return populate(post);
     }
 
     private PostDto populate(Post post){

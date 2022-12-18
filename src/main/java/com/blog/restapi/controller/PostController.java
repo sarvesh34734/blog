@@ -1,6 +1,7 @@
 package com.blog.restapi.controller;
 
 import com.blog.restapi.dtos.PostDto;
+import com.blog.restapi.exception.ResourceNotFoundException;
 import com.blog.restapi.service.PostService;
 import jakarta.annotation.Resource;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,16 @@ public class PostController {
     @GetMapping
     public ResponseEntity<List<PostDto>> getPosts(){
         return ResponseEntity.ok(postService.getPosts());
+    }
+
+    @GetMapping(value="/{id}")
+    public ResponseEntity<PostDto> getPost(@PathVariable Long id){
+        try{
+            return ResponseEntity.ok(postService.getPost(id));
+        }
+        catch(ResourceNotFoundException ex){
+            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        }
     }
 
 }
