@@ -8,12 +8,13 @@ import com.blog.restapi.repository.PostRepository;
 import com.blog.restapi.service.PostService;
 import jakarta.annotation.Resource;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -35,10 +36,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostResponse getPosts(int pageNo,int pageSize){
+    public PostResponse getPosts(int pageNo, int pageSize, String sortBy, String sortDir){
+
+        // sort instance
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
 
         // create Pageable instance
-        Pageable pageable = Pageable.ofSize(pageSize).withPage(pageNo);
+        Pageable pageable = PageRequest.ofSize(pageSize).withPage(pageNo).withSort(sort);
 
         Page<Post> page = postRepository.findAll(pageable);
 
