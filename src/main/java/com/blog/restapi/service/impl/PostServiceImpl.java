@@ -1,15 +1,18 @@
 package com.blog.restapi.service.impl;
 
 import com.blog.restapi.dtos.PostDto;
+import com.blog.restapi.dtos.PostResponse;
 import com.blog.restapi.entity.Post;
 import com.blog.restapi.exception.ResourceNotFoundException;
 import com.blog.restapi.repository.PostRepository;
 import com.blog.restapi.service.PostService;
 import jakarta.annotation.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,9 +35,25 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getPosts(){
-        List<Post> posts = postRepository.findAll();
-        return posts.stream().map(post -> populate(post)).collect(Collectors.toList());
+    public PostResponse getPosts(int pageNo,int pageSize){
+
+        // create Pageable instance
+        Pageable pageable = Pageable.ofSize(pageSize).withPage(pageNo);
+
+        Page<Post> page = postRepository.findAll(pageable);
+
+        // get content from page
+        List<Post> posts = page.getContent();
+        List<PostDto> content = posts.stream().map(this::populate).toList();
+        PostResponse res = PostResponse.builder()
+                .content(content)
+                .pageNo(pageNo)
+                .pageSize(pageSize)
+                .totalPages(page.getTotalPages())
+                .totalElements(page.getTotalElements())
+                .last(page.isLast())
+                .build();
+        return res;
     }
 
     @Override

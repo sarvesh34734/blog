@@ -1,6 +1,7 @@
 package com.blog.restapi.controller;
 
 import com.blog.restapi.dtos.PostDto;
+import com.blog.restapi.dtos.PostResponse;
 import com.blog.restapi.exception.ResourceNotFoundException;
 import com.blog.restapi.service.PostService;
 import jakarta.annotation.Resource;
@@ -28,8 +29,9 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PostDto>> getPosts(){
-        return ResponseEntity.ok(postService.getPosts());
+    public ResponseEntity<PostResponse> getPosts(@RequestParam(value="pageNo",defaultValue = "0",required = false) int pageNo,
+                                                       @RequestParam(value="pageSize",defaultValue = "10",required = false) int pageSize){
+        return ResponseEntity.ok(postService.getPosts(pageNo,pageSize));
     }
 
     @GetMapping(value="/{id}")
