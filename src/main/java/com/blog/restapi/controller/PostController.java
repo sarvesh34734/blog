@@ -4,6 +4,7 @@ import com.blog.restapi.dtos.PostDto;
 import com.blog.restapi.dtos.PostResponse;
 import com.blog.restapi.exception.ResourceNotFoundException;
 import com.blog.restapi.service.PostService;
+import com.blog.restapi.utils.AppConstants;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,10 +30,10 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<PostResponse> getPosts(@RequestParam(value="pageNo",defaultValue = "0",required = false) int pageNo,
-                                                 @RequestParam(value="pageSize",defaultValue = "10",required = false) int pageSize,
-                                                 @RequestParam(value="sortBy",defaultValue = "id",required = false) String sortBy,
-                                                 @RequestParam(value="sortDir", defaultValue = "asc",required = false) String sortDir){
+    public ResponseEntity<PostResponse> getPosts(@RequestParam(value="pageNo",defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,required = false) int pageNo,
+                                                 @RequestParam(value="pageSize",defaultValue = AppConstants.DEFAULT_PAGE_SIZE,required = false) int pageSize,
+                                                 @RequestParam(value="sortBy",defaultValue = AppConstants.DEFAULT_SORT_BY,required = false) String sortBy,
+                                                 @RequestParam(value="sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,required = false) String sortDir){
         return ResponseEntity.ok(postService.getPosts(pageNo,pageSize,sortBy,sortDir));
     }
 
